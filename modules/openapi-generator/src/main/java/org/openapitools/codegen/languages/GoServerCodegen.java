@@ -53,6 +53,7 @@ public class GoServerCodegen extends AbstractGoCodegen {
     protected String sourceFolder = "go";
     protected Boolean corsFeatureEnabled = false;
     protected Boolean addResponseHeaders = false;
+    protected Boolean outputAsLibrary = false;
 
 
     public GoServerCodegen() {
@@ -109,6 +110,11 @@ public class GoServerCodegen extends AbstractGoCodegen {
         optAddResponseHeaders.defaultValue(addResponseHeaders.toString());
         cliOptions.add(optAddResponseHeaders);
 
+        // option to exclude main package (main.go), Dockerfile, and go.mod files
+        CliOption optOutputAsLibrary = new CliOption("outputAsLibrary", "Exclude main.go, go.mod, and Dockerfile from output");
+        optOutputAsLibrary.setType("bool");
+        optOutputAsLibrary.defaultValue(outputAsLibrary.toString());
+        cliOptions.add(optOutputAsLibrary);
         /*
          * Models.  You can write model files using the modelTemplateFiles map.
          * if you want to create one template for file, you can do so here.
@@ -212,6 +218,12 @@ public class GoServerCodegen extends AbstractGoCodegen {
             this.setAddResponseHeaders(convertPropertyToBooleanAndWriteBack("addResponseHeaders"));
         } else {
             additionalProperties.put("addResponseHeaders", addResponseHeaders);
+        }
+
+        if (additionalProperties.containsKey("outputAsLibrary")) {
+            this.setOutputAsLibrary(convertPropertyToBooleanAndWriteBack("outputAsLibrary"));
+        } else {
+            additionalProperties.put("outputAsLibrary", outputAsLibrary);
         }
 
         if (additionalProperties.containsKey(CodegenConstants.ENUM_CLASS_PREFIX)) {
@@ -361,6 +373,10 @@ public class GoServerCodegen extends AbstractGoCodegen {
 
     public void setAddResponseHeaders(Boolean addResponseHeaders) {
         this.addResponseHeaders = addResponseHeaders;
+    }
+
+    public void setOutputAsLibrary(Boolean outputAsLibrary) {
+        this.outputAsLibrary = outputAsLibrary;
     }
 
     @Override
