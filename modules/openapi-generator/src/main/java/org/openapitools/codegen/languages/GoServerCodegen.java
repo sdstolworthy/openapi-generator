@@ -54,6 +54,7 @@ public class GoServerCodegen extends AbstractGoCodegen {
     protected Boolean corsFeatureEnabled = false;
     protected Boolean addResponseHeaders = false;
     protected Boolean outputAsLibrary = false;
+    protected Boolean onlyInterfaces = false;
 
 
     public GoServerCodegen() {
@@ -110,6 +111,13 @@ public class GoServerCodegen extends AbstractGoCodegen {
         optAddResponseHeaders.defaultValue(addResponseHeaders.toString());
         cliOptions.add(optAddResponseHeaders);
 
+        
+        // option to exclude service factories; only interfaces are rendered
+        CliOption optOnlyInterfaces = new CliOption("onlyInterfaces", "Exclude default service creators from output; only generate interfaces");
+        optOnlyInterfaces.setType("bool");
+        optOnlyInterfaces.defaultValue(onlyInterfaces.toString());
+        cliOptions.add(optOnlyInterfaces);
+
         // option to exclude main package (main.go), Dockerfile, and go.mod files
         CliOption optOutputAsLibrary = new CliOption("outputAsLibrary", "Exclude main.go, go.mod, and Dockerfile from output");
         optOutputAsLibrary.setType("bool");
@@ -134,6 +142,7 @@ public class GoServerCodegen extends AbstractGoCodegen {
                 "controller-api.mustache",   // the template to use
                 ".go");       // the extension for each file to write
 
+        if (!this.onlyInterfaces) {
         /*
          * Service templates.  You can write services for each Api file with the apiTemplateFiles map.
             These services are skeletons built to implement the logic of your api using the
@@ -142,6 +151,7 @@ public class GoServerCodegen extends AbstractGoCodegen {
         apiTemplateFiles.put(
                 "service.mustache",   // the template to use
                 "_service.go");       // the extension for each file to write
+        }
 
         /*
          * Template Location.  This is the location which templates will be read from.  The generator
@@ -218,6 +228,12 @@ public class GoServerCodegen extends AbstractGoCodegen {
             this.setAddResponseHeaders(convertPropertyToBooleanAndWriteBack("addResponseHeaders"));
         } else {
             additionalProperties.put("addResponseHeaders", addResponseHeaders);
+        }
+
+        if (additionalProperties.containsKey("onlyInterfaces")) {
+            this.setOnlyInterfaces(convertPropertyToBooleanAndWriteBack("onlyInterfaces"));
+        } else {
+            additionalProperties.put("onlyInterfaces", onlyInterfaces);
         }
 
         if (additionalProperties.containsKey("outputAsLibrary")) {
@@ -375,6 +391,10 @@ public class GoServerCodegen extends AbstractGoCodegen {
 
     public void setAddResponseHeaders(Boolean addResponseHeaders) {
         this.addResponseHeaders = addResponseHeaders;
+    }
+
+    public void setOnlyInterfaces(Boolean onlyInterfaces) {
+        this.onlyInterfaces = onlyInterfaces;
     }
 
     public void setOutputAsLibrary(Boolean outputAsLibrary) {
