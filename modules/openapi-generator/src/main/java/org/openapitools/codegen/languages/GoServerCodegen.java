@@ -143,14 +143,14 @@ public class GoServerCodegen extends AbstractGoCodegen {
                 ".go");       // the extension for each file to write
 
         if (!this.onlyInterfaces) {
-        /*
-         * Service templates.  You can write services for each Api file with the apiTemplateFiles map.
-            These services are skeletons built to implement the logic of your api using the
-            expected parameters and response.
-         */
-        apiTemplateFiles.put(
-                "service.mustache",   // the template to use
-                "_service.go");       // the extension for each file to write
+          /*
+           * Service templates.  You can write services for each Api file with the apiTemplateFiles map.
+              These services are skeletons built to implement the logic of your api using the
+              expected parameters and response.
+           */
+          apiTemplateFiles.put(
+                  "service.mustache",   // the template to use
+                  "_service.go");       // the extension for each file to write
         }
 
         /*
