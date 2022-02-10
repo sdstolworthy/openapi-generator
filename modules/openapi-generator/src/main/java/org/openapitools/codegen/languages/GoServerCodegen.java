@@ -142,16 +142,14 @@ public class GoServerCodegen extends AbstractGoCodegen {
                 "controller-api.mustache",   // the template to use
                 ".go");       // the extension for each file to write
 
-        if (!this.onlyInterfaces) {
-          /*
-           * Service templates.  You can write services for each Api file with the apiTemplateFiles map.
-              These services are skeletons built to implement the logic of your api using the
-              expected parameters and response.
-           */
-          apiTemplateFiles.put(
-                  "service.mustache",   // the template to use
-                  "_service.go");       // the extension for each file to write
-        }
+        /*
+         * Service templates.  You can write services for each Api file with the apiTemplateFiles map.
+            These services are skeletons built to implement the logic of your api using the
+            expected parameters and response.
+         */
+        apiTemplateFiles.put(
+                "service.mustache",   // the template to use
+                "_service.go");       // the extension for each file to write
 
         /*
          * Template Location.  This is the location which templates will be read from.  The generator
@@ -234,6 +232,10 @@ public class GoServerCodegen extends AbstractGoCodegen {
             this.setOnlyInterfaces(convertPropertyToBooleanAndWriteBack("onlyInterfaces"));
         } else {
             additionalProperties.put("onlyInterfaces", onlyInterfaces);
+        }
+
+        if (this.onlyInterfaces) {
+          apiTemplateFiles.remove("service.mustache");
         }
 
         if (additionalProperties.containsKey("outputAsLibrary")) {
